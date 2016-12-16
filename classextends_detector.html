@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>classextends_detector</title>
+    <script>
+        /*定义基类*/
+        (function(global){
+                function DetecBase (configs) {
+                    if(!this instanceof DetecBase) {
+                        throw new Error ("必须创建DetecBase实例");
+                    }
+                    this.configs = configs;
+                    this.analyze();
+                }
+                DetecBase.prototype.detect = function () {
+                    throw new Error("不能直接执行detect");
+                }
+                DetecBase.prototype.analyze = function () {
+                    console.log("正在分析数据……");
+                    this.data = "数据详情";
+                }
+            /*定义子类*/
+            function LinkDetec(links) {
+                DetecBase.apply(this,arguments);
+                if(!this instanceof LinkDetec) {
+                    throw new Error ("必须创建LinkDetec实例");
+                }
+                this.links = links;
+            }
+
+            function  ContainerDetec (containers) {
+                DetecBase.apply(this,arguments);
+                if(!this instanceof ContainerDetec) {
+                    throw new Error ("必须创建ContainerDetec实例");
+                }
+                this.containers = containers;
+            }
+            /*继承*/
+            function inherit (subClass,parentClass) {
+                subClass.prototype = Object.create(parentClass.prototype);
+                subClass.prototype.constructor = subClass;
+            }
+
+            inherit (LinkDetec,DetecBase);
+            inherit (ContainerDetec,DetecBase);
+
+            /*初始化子类自己的方法*/
+            LinkDetec.prototype.detect = function  () {
+                console.log("数据加载"+this.data);
+                console.log("开始探测");
+                console.log("探测到链接"+this.links);
+            }
+            ContainerDetec.prototype.detect = function  () {
+                console.log("数据加载"+this.data);
+                console.log("开始探测");
+                console.log("探测到容器"+this.containers);
+            }
+
+            /*冻结各个类的原型避免被改写*/
+            Object.freeze(DetecBase);
+            Object.freeze(DetecBase.prototype);
+            Object.freeze(LinkDetec);
+            Object.freeze(LinkDetec.prototype);
+            Object.freeze(ContainerDetec);
+            Object.freeze(ContainerDetec.prototype);
+            /*定义这三个类到全局，使其能被外部访问，但不能被改写删除*/
+            Object.defineProperties(global,{
+                LinkDetec:{value:LinkDetec,writable:true},
+                ContainerDetec:{value:ContainerDetec},
+                DetecBase:{value:DetecBase}
+            });
+        })(this);
+        /*实例化*/
+        var link = new LinkDetec ("http://intro.vemay.cn");
+        var contain = new ContainerDetec ("#div #span");
+
+        link.detect();
+        contain.detect();
+    </script>
+</head>
+<body>
+
+</body>
+</html>

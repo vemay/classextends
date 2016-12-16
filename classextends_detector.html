@@ -65,11 +65,14 @@
             Object.freeze(ContainerDetec);
             Object.freeze(ContainerDetec.prototype);
             /*定义这三个类到全局，使其能被外部访问，但不能被改写删除*/
-            Object.defineProperties(global,{
+           /* Object.defineProperties(global,{
                 LinkDetec:{value:LinkDetec,writable:true},
                 ContainerDetec:{value:ContainerDetec},
                 DetecBase:{value:DetecBase}
-            });
+            });*/
+           global["LinkDetec"] = LinkDetec;
+           global["ContainerDetec"] = ContainerDetec;
+           global["DetecBase"] = DetecBase;
         })(this);
         /*实例化*/
         var link = new LinkDetec ("http://intro.vemay.cn");
